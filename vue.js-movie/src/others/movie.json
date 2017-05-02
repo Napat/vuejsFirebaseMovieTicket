@@ -1,0 +1,20 @@
+{
+    "movies":[
+        { "id": "alienco" },
+        { "id": "fairytail2" },
+        { "id": "guardiansgal2" },
+        { "id": "wonderwo" }
+    ],
+    "alienco":[
+        { "id": "A1", "seated": true, "price":120 },
+        { "id": "A2", "seated": true, "price":150 },
+        { "id": "A3", "seated": false, "price":180 },
+        { "id": "A4", "seated": true, "price":210 }
+    ],
+    "fairytail2":[
+        { "id": "A1", "seated": true, "price":150 },
+        { "id": "A2", "seated": true, "price":150 },
+        { "id": "A3", "seated": true, "price":210 },
+        { "id": "A4", "seated": false, "price":240 }
+    ]
+}
