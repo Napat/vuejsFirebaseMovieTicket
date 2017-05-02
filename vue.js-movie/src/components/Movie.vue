@@ -2,7 +2,7 @@
     <div class="box">
         <h3 class="title">[[Movie]]</h3>
         <div class="columns">
-            <div v-for="m in movies" class="column">
+            <div v-for="m in movies" class="column" @click="chooseMovie(m.id)">
                 <figure class="image">
                     <img :src="imgSrc(m.id)">                
                 </figure>
@@ -25,6 +25,10 @@ export default {
     methods: {
         imgSrc(movieId){   
             return `/movies/${movieId}.jpg`
+        },
+        chooseMovie(movieId){
+            console.log(`notify(send) ${movieId} to app using this.$emit`)
+            this.$emit('chooseMovie', movieId)
         }
     }
 }
