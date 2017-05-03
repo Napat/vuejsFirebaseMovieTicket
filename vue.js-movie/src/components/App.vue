@@ -14,7 +14,8 @@ export default {
     components: { Movie, Seat },
     data() {
         return {
-            movieId: ''
+            movieId: '',
+            selectSeats: []
         }
     },
     methods: {
@@ -22,7 +23,17 @@ export default {
             this.movieId = movieId
         },
         handleChooseSeat(seat){
-            console.log(seat)
+            const idofselectSeatsBuf = this.selectSeats.map(s => s.id)
+            const idcheck = idofselectSeatsBuf.indexOf(seat.id)
+
+            if (idcheck === -1){
+                //if not available(-1) then add new object to array buf
+                this.selectSeats.push(seat)
+            } else{
+                //if available then delete object from array buf
+                this.selectSeats.splice(idcheck, 1)
+            }
+            console.log(this.selectSeats.length)
         }
     }
 }
