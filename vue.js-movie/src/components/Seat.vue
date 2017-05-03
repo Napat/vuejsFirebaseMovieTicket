@@ -6,6 +6,7 @@
             <button 
                 :class="className(s)"
                 :disabled="s.seated"
+                @click="chooseSeat(s)"
             > {{ s.id }} price: {{ s.price }} Baht</button>
             <span> &nbsp; </span>
         </template>
@@ -25,6 +26,9 @@ export default {
                 'button',
                 { 'is-danger': seat.seated }
             ]
+        },
+        chooseSeat(seat) {
+            this.$emit('chooseSeat', seat)
         }
     },
     computed: {

@@ -2,7 +2,7 @@
     <div class="box">
     <h3 class="title">[App]: {{ movieId }}</h3>
     <movie @chooseMovie="handleChooseMovie" :movieId="movieId" />
-    <seat :movieId="movieId" />
+    <seat :movieId="movieId" @chooseSeat="handleChooseSeat" />
     </div>
 </template>
 
@@ -20,6 +20,9 @@ export default {
     methods: {
         handleChooseMovie(movieId){            
             this.movieId = movieId
+        },
+        handleChooseSeat(seat){
+            console.log(seat)
         }
     }
 }
