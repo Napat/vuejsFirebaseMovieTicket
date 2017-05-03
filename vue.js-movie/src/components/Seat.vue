@@ -3,7 +3,10 @@
         <h3 class="title">[[Seat]] {{ movieId }}</h3>
         <p> {{ seats }} </p>
         <template v-for="s in seats">
-            <button :class="className(s)"> {{ s.id }} price: {{ s.price }} Baht</button>
+            <button 
+                :class="className(s)"
+                :disabled="s.seated"
+            > {{ s.id }} price: {{ s.price }} Baht</button>
             <span> &nbsp; </span>
         </template>
     </div>
