@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <h3 class="title">[[Movie]]</h3>
+        <h3 class="title">[[Movie]]: {{ movieId }}</h3>
         <div class="columns">
             <div v-for="m in movies" class="column" @click="chooseMovie(m.id)">
                 <figure class="image">
@@ -17,6 +17,7 @@ import { movies } from 'Others/movie.json'
 console.log(movies)
 
 export default {
+    props: [ 'movieId'],
     data() {
         return {
             movies
