@@ -37,6 +37,12 @@ export default {
                 { 'chosen': this.movieId === movieId }
             ]
         }
+    },
+    // mounted() will auto call when rendering page complete 
+    mounted () {
+        console.log(movies[0].id)
+        this.chooseMovie( movies[0].id )
+        console.log('----------------------')
     }
 }
 </script>
