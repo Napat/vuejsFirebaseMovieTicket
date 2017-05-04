@@ -2,7 +2,11 @@
     <div class="box">
     <h3 class="title">[App]: {{ movieId }}</h3>
     <movie @chooseMovie="handleChooseMovie" :movieId="movieId" />
-    <seat :movieId="movieId" @chooseSeat="handleChooseSeat" />
+    <seat 
+        :movieId="movieId" 
+        @chooseSeat="handleChooseSeat" 
+        :selectSeats="selectSeats"  
+    />
     </div>
 </template>
 
@@ -23,8 +27,8 @@ export default {
             this.movieId = movieId
         },
         handleChooseSeat(seat){
-            const idofselectSeatsBuf = this.selectSeats.map(s => s.id)
-            const idcheck = idofselectSeatsBuf.indexOf(seat.id)
+            const idOfSelectSeatsBuf = this.selectSeats.map(s => s.id)
+            const idcheck = idOfSelectSeatsBuf.indexOf(seat.id)
 
             if (idcheck === -1){
                 //if not available(-1) then add new object to array buf
@@ -33,7 +37,6 @@ export default {
                 //if available then delete object from array buf
                 this.selectSeats.splice(idcheck, 1)
             }
-            console.log(this.selectSeats.length)
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <h3 class="title">[[Seat]] {{ movieId }}</h3>
-        <p> {{ seats }} </p>
+        <p> debug1: {{ seats }} </p>
         <template v-for="s in seats">
             <button 
                 :class="className(s)"
@@ -10,6 +10,7 @@
             > {{ s.id }} price: {{ s.price }} Baht</button>
             <span> &nbsp; </span>
         </template>
+        <span> debug2: {{ selectSeats }}</span>
     </div>
 </template>
 
@@ -19,12 +20,17 @@ console.log('xxxx: ')
 console.log(movie)
 
 export default {
-    props: [ 'movieId'],
+    props: [ 'movieId', 'selectSeats' ],
     methods: {
         className(seat) {
+            const idOfSelectSeatsBuf = this.selectSeats.map(s => s.id)
+            const idcheck = idOfSelectSeatsBuf.indexOf(seat.id)
+
             return [
                 'button',
-                { 'is-danger': seat.seated }
+                {   'is-danger': seat.seated, 
+                    'is-primary': idcheck != -1 
+                }
             ]
         },
         chooseSeat(seat) {
