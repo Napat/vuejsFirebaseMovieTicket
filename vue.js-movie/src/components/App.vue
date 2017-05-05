@@ -1,6 +1,7 @@
 <template>
     <div class="box">
     <h3 class="title">[App]: {{ movieId }}</h3>
+    <p> Select: {{ status.count }} seat(s), Total price: {{ status.price }} Baht</p>
     <movie @chooseMovie="handleChooseMovie" :movieId="movieId" />
     <seat 
         :movieId="movieId" 
@@ -19,7 +20,8 @@ export default {
     data() {
         return {
             movieId: '',
-            selectSeats: []
+            selectSeats: [],
+            status: { count: 0, price: 0 }
         }
     },
     methods: {
@@ -37,6 +39,15 @@ export default {
                 //if available then delete object from array buf
                 this.selectSeats.splice(idcheck, 1)
             }
+
+            this.status = this.selectSeats.reduce( (sum, selectSeatsElement ) => {
+                //console.log( `in. sum.count= ${sum.count}, sum.price= ${sum.price}` )
+                sum.count++
+                sum.price += selectSeatsElement.price   
+                //console.log( `out. sum.count= ${sum.count}, sum.price= ${sum.price}` )             
+                return sum
+                }, { count: 0, price: 0 } 
+            )
         }
     }
 }
