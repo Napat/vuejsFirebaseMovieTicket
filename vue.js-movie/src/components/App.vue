@@ -25,7 +25,16 @@ export default {
         }
     },
     methods: {
-        handleChooseMovie(movieId){            
+        handleChooseMovie(movieId){     
+            if( this.status.count != 0 ){
+                if( confirm('Are you sure to select new movie? Old data will be lost!!)') == true){
+                    //Reset all data
+                    this.status = { count: 0, price: 0 }
+                    this.selectSeats = []
+                }else{
+                    return false
+                }
+            }       
             this.movieId = movieId
         },
         handleChooseSeat(seat){
