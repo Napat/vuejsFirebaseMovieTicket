@@ -5,7 +5,7 @@
         <template v-for="s in seats">
             <button 
                 :class="className(s)"
-                :disabled="s.seated"
+                :disabled="checkBtnDisable(s)"
                 @click="chooseSeat(s)"
             > {{ s.id }} price: {{ s.price }} Baht</button>
             <span> &nbsp; </span>
@@ -42,6 +42,22 @@ export default {
         },
         chooseSeat(seat) {
             this.$emit('chooseSeat', seat)
+        },
+        checkBtnDisable(seat){
+            if(seat.seated === true){
+                return true
+            }
+            const idSelectSeats = this.selectSeats.map(s => s.id)
+            const idcheck = idSelectSeats.indexOf(seat.id)
+
+            const firebaseIdSelecteSeats = this.firebaseSeats.map(s => s.id)
+            const firebaseIdcheck = firebaseIdSelecteSeats.indexOf(seat.id)
+
+            if(firebaseIdcheck != -1 && idcheck === -1){
+                return true
+            }
+
+            return false
         }
     },
     computed: {
