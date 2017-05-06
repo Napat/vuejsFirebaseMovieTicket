@@ -20,7 +20,7 @@ console.log('xxxx: ')
 console.log(movie)
 
 export default {
-    props: [ 'movieId', 'selectSeats' ],
+    props: [ 'movieId', 'selectSeats', 'firebaseSeats' ],
     methods: {
         className(seat) {
             const idOfSelectSeatsBuf = this.selectSeats.map(s => s.id)

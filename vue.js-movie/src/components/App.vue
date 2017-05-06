@@ -6,7 +6,8 @@
     <seat 
         :movieId="movieId" 
         @chooseSeat="handleChooseSeat" 
-        :selectSeats="selectSeats"  
+        :selectSeats="selectSeats" 
+        :firebaseSeats="firebaseSeats" 
     />
     </div>
 </template>
@@ -50,14 +51,20 @@ export default {
             this.movieId = movieId
             
             const movieRef = db.ref('/').child(this.movieId)
-            movieRef.on('value', (snapshot) => {
-              console.log(snapshot.val())  
-              const seats = snapshot.val()
 
+            // register firebase event 'on value change'
+            movieRef.on('value', snapshot => {
+              // console.log(snapshot.val())  
+              const seats = snapshot.val()
+              
+              this.firebaseSeats = []
               _.forOwn(seats, s => {
-                  console.log(s)
+                  pushToArray(s, this.firebaseSeats)
               })
+              console.log(this.firebaseSeats.length)
             } )
+
+            
 
         },
         handleChooseSeat(seat){
