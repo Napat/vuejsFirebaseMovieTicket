@@ -13,6 +13,7 @@
 
 <script>
 import firebase from 'firebase'
+import _ from 'lodash'
 
 import Movie from 'Components/Movie.vue'
 import Seat from 'Components/Seat.vue'
@@ -51,6 +52,11 @@ export default {
             const movieRef = db.ref('/').child(this.movieId)
             movieRef.on('value', (snapshot) => {
               console.log(snapshot.val())  
+              const seats = snapshot.val()
+
+              _.forOwn(seats, s => {
+                  console.log(s)
+              })
             } )
 
         },
