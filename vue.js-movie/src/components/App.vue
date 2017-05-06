@@ -16,6 +16,7 @@ import firebase from 'firebase'
 
 import Movie from 'Components/Movie.vue'
 import Seat from 'Components/Seat.vue'
+import { pushToArray } from 'Others/lib'
 
 const config = {
     databaseURL: "https://vuejsfirebasemovieticket.firebaseio.com"
@@ -30,6 +31,7 @@ export default {
         return {
             movieId: '',
             selectSeats: [],
+            firebaseSeats: [],
             status: { count: 0, price: 0 }
         }
     },
@@ -45,19 +47,16 @@ export default {
                 }
             }       
             this.movieId = movieId
+            
+            const movieRef = db.ref('/').child(this.movieId)
+            movieRef.on('value', (snapshot) => {
+              console.log(snapshot.val())  
+            } )
+
         },
         handleChooseSeat(seat){
-            const idOfSelectSeatsBuf = this.selectSeats.map(s => s.id)
-            const idcheck = idOfSelectSeatsBuf.indexOf(seat.id)
+            pushToArray(seat, this.selectSeats)
 
-            if (idcheck === -1){
-                //if not available(-1) then add new object to array buf
-                this.selectSeats.push(seat)
-            } else{
-                //if available then delete object from array buf
-                this.selectSeats.splice(idcheck, 1)
-            }
-            
             const dbRef = db.ref('/').child(this.movieId)
             dbRef.push(seat)
 
