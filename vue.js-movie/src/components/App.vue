@@ -12,8 +12,17 @@
 </template>
 
 <script>
+import firebase from 'firebase'
+
 import Movie from 'Components/Movie.vue'
 import Seat from 'Components/Seat.vue'
+
+const config = {
+    databaseURL: "https://vuejsfirebasemovieticket.firebaseio.com"
+}
+firebase.initializeApp(config);
+
+const db = firebase.database()
 
 export default {
     components: { Movie, Seat },
@@ -48,6 +57,9 @@ export default {
                 //if available then delete object from array buf
                 this.selectSeats.splice(idcheck, 1)
             }
+            
+            const dbRef = db.ref('/').child(this.movieId)
+            dbRef.push(seat)
 
             this.status = this.selectSeats.reduce( (sum, selectSeatsElement ) => {
                 //console.log( `in. sum.count= ${sum.count}, sum.price= ${sum.price}` )
