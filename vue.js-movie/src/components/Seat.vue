@@ -23,13 +23,20 @@ export default {
     props: [ 'movieId', 'selectSeats', 'firebaseSeats' ],
     methods: {
         className(seat) {
-            const idOfSelectSeatsBuf = this.selectSeats.map(s => s.id)
-            const idcheck = idOfSelectSeatsBuf.indexOf(seat.id)
+            const idSelectSeats = this.selectSeats.map(s => s.id)
+            const idcheck = idSelectSeats.indexOf(seat.id)
+
+            const firebaseIdSelecteSeats = this.firebaseSeats.map(s => s.id)
+            const firebaseIdcheck = firebaseIdSelecteSeats.indexOf(seat.id)
 
             return [
                 'button',
-                {   'is-danger': seat.seated, 
-                    'is-primary': idcheck != -1 
+                {   
+                    'is-danger': seat.seated, 
+                    // apply green color by primary if seat is seleted by current session 
+                    'is-primary': idcheck != -1,
+                    // apply yellow color by is-warning if firebaseSeated by other session 
+                    'is-warning': firebaseIdcheck != -1 && idcheck === -1 
                 }
             ]
         },

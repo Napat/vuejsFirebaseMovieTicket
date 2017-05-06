@@ -61,7 +61,6 @@ export default {
               _.forOwn(seats, s => {
                   pushToArray(s, this.firebaseSeats)
               })
-              console.log(this.firebaseSeats.length)
             } )
 
             
