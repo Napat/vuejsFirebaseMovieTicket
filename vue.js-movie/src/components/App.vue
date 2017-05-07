@@ -19,11 +19,15 @@ import _ from 'lodash'
 import Movie from 'Components/Movie.vue'
 import Seat from 'Components/Seat.vue'
 import { pushToArray } from 'Others/lib'
+import { firebaseconfig } from 'Others/config'
 
-const config = {
-    databaseURL: "https://vuejsfirebasemovieticket.firebaseio.com"
-}
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseconfig);
+var provider = new firebase.auth.FacebookAuthProvider()
+
+provider.addScope('public_profile')
+provider.setCustomParameters({
+  'display': 'popup'
+})
 
 const db = firebase.database()
 
@@ -31,6 +35,8 @@ export default {
     components: { Movie, Seat },
     data() {
         return {
+            displayName: '',
+            photoURL: '',
             movieId: '',
             selectSeats: [],
             firebaseSeats: [],
@@ -62,9 +68,6 @@ export default {
                   pushToArray(s, this.firebaseSeats)
               })
             } )
-
-            
-
         },
         handleChooseSeat(seat){
             pushToArray(seat, this.selectSeats)

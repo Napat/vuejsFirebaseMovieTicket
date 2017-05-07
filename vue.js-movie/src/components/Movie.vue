@@ -14,7 +14,7 @@
 <script>
 import { movies } from 'Others/movie.json'
 
-console.log(movies)
+// console.log(movies)
 
 export default {
     props: [ 'movieId'],
@@ -28,7 +28,7 @@ export default {
             return `/movies/${movieId}.jpg`
         },
         chooseMovie(movieId){
-            console.log(`notify(send) ${movieId} to app using this.$emit`)
+            // console.log(`notify(send) ${movieId} to app using this.$emit`)
             this.$emit('chooseMovie', movieId)
         },
         className(movieId){
@@ -40,9 +40,9 @@ export default {
     },
     // mounted() will auto call when rendering page complete 
     mounted () {
-        console.log(movies[0].id)
+        // console.log(movies[0].id)
         this.chooseMovie( movies[0].id )
-        console.log('----------------------')
+        // console.log('----------------------')
     }
 }
 </script>

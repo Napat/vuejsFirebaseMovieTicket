@@ -16,27 +16,34 @@
 
 <script>
 import movie from 'Others/movie.json'
-console.log('xxxx: ')
-console.log(movie)
+
+const isSeated = (seat) => {
+    return seat.seated === true
+}
+const isSeatSelected = (seatId) => {
+    return seatId != -1
+}
+const isSelectByOther = (currentSeatId, dbSeatId) => {
+    return isSeatSelected(dbSeatId) && !isSeatSelected(currentSeatId)
+}
 
 export default {
     props: [ 'movieId', 'selectSeats', 'firebaseSeats' ],
     methods: {
         className(seat) {
-            const idSelectSeats = this.selectSeats.map(s => s.id)
-            const idcheck = idSelectSeats.indexOf(seat.id)
-
-            const firebaseIdSelecteSeats = this.firebaseSeats.map(s => s.id)
-            const firebaseIdcheck = firebaseIdSelecteSeats.indexOf(seat.id)
+            const currentSelectSeatsId = this.selectSeats.map(s => s.id)
+            const currentSeatId = currentSelectSeatsId.indexOf(seat.id)
+            const dbSelecteSeatsId = this.firebaseSeats.map(s => s.id)
+            const dbSeatId = dbSelecteSeatsId.indexOf(seat.id)
 
             return [
                 'button',
                 {   
-                    'is-danger': seat.seated, 
+                    'is-danger': isSeated(seat), 
                     // apply green color by primary if seat is seleted by current session 
-                    'is-primary': idcheck != -1,
+                    'is-primary': isSeatSelected(currentSeatId),
                     // apply yellow color by is-warning if firebaseSeated by other session 
-                    'is-warning': firebaseIdcheck != -1 && idcheck === -1 
+                    'is-warning':  isSelectByOther(currentSeatId, dbSeatId)
                 }
             ]
         },
@@ -44,19 +51,18 @@ export default {
             this.$emit('chooseSeat', seat)
         },
         checkBtnDisable(seat){
-            if(seat.seated === true){
-                return true
-            }
-            const idSelectSeats = this.selectSeats.map(s => s.id)
-            const idcheck = idSelectSeats.indexOf(seat.id)
-
-            const firebaseIdSelecteSeats = this.firebaseSeats.map(s => s.id)
-            const firebaseIdcheck = firebaseIdSelecteSeats.indexOf(seat.id)
-
-            if(firebaseIdcheck != -1 && idcheck === -1){
+            if( isSeated(seat) === true){
                 return true
             }
 
+            const currentSelectSeatsId = this.selectSeats.map(s => s.id)
+            const currentSeatId = currentSelectSeatsId.indexOf(seat.id)
+            const dbSelecteSeatsId = this.firebaseSeats.map(s => s.id)
+            const dbSeatId = dbSelecteSeatsId.indexOf(seat.id)
+
+            if(isSelectByOther(currentSeatId, dbSeatId)){
+                return true
+            }            
             return false
         }
     },
