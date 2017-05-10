@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+    <div class="box" v-if="islogin === true">
         <h3 class="title">[[Seat]] {{ movieId }}</h3>
         <p> debug1: {{ seats }} </p>
         <template v-for="s in seats">
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import movie from 'Others/movie.json'
+//import movies from 'Others/movie.json'
 
 const isSeated = (seat) => {
     return seat.seated === true
@@ -28,7 +28,12 @@ const isSelectByOther = (currentSeatId, dbSeatId) => {
 }
 
 export default {
-    props: [ 'movieId', 'selectSeats', 'firebaseSeats' ],
+    props: [ 'islogin', 'movieId', 'selectSeats', 'firebaseSeats', 'fbConfirmArg' ],
+    data() {
+        return {
+            // fbConfirmArg
+        }
+    },
     methods: {
         className(seat) {
             const currentSelectSeatsId = this.selectSeats.map(s => s.id)
@@ -68,7 +73,8 @@ export default {
     },
     computed: {
         seats() {
-            return movie[this.movieId]
+            //return movies[this.movieId]
+            return this.fbConfirmArg[this.movieId]
         }
     }
 }

@@ -1,8 +1,8 @@
 <template>
-    <div class="box">
+    <div class="box" v-if="islogin === true">
         <h3 class="title">[[Movie]]: {{ movieId }}</h3>
         <div class="columns">
-            <div v-for="m in movies" :class="className(m.id)" @click="chooseMovie(m.id)">
+            <div v-for="m in fbMoviesArg" :class="className(m.id)" @click="chooseMovie(m.id)">
                 <figure class="image">
                     <img :src="imgSrc(m.id)">                
                 </figure>
@@ -12,19 +12,23 @@
 </template>
 
 <script>
-import { movies } from 'Others/movie.json'
+//import { movies } from 'Others/movie.json'
 
 // console.log(movies)
 
 export default {
-    props: [ 'movieId'],
+    props: [ 'islogin', 'movieId', 'fbMoviesArg' ],
     data() {
         return {
-            movies
+            // movies
         }
     },
     methods: {
         imgSrc(movieId){   
+            console.log('=====================')
+            //console.log( this.fbMoviesArg.child("movies/0").hasChildren())
+           // console.log( this.fbMoviesArg ) //??????
+            
             return `/movies/${movieId}.jpg`
         },
         chooseMovie(movieId){
@@ -40,9 +44,11 @@ export default {
     },
     // mounted() will auto call when rendering page complete 
     mounted () {
+        console.log('----------------------')
+        console.log(this.fbMoviesArg)
         // console.log(movies[0].id)
-        this.chooseMovie( movies[0].id )
-        // console.log('----------------------')
+        //this.chooseMovie( movies[0].id )
+        console.log('----------------------')
     }
 }
 </script>

@@ -1,23 +1,35 @@
 <template>
-    <div class="box">
-    <h3 class="title">[App]: {{ movieId }}</h3>
-    <div id="googlemail">
-        <button @click="googlesign()"> signin </button>
-        <button @click="googlesignOut()"> signout </button>
-        <br>
-        <img :src="photoURL" height="100" width="100" alt="LoginImg" > 
-        <br>
-        {{ displayName }}
-    </div>    
-    <p> Select: {{ status.count }} seat(s), Total price: {{ status.price }} Baht</p>
-    <movie @chooseMovie="handleChooseMovie" :movieId="movieId" />
-    <seat 
-        :movieId="movieId" 
-        @chooseSeat="handleChooseSeat" 
-        :selectSeats="selectSeats" 
-        :firebaseSeats="firebaseSeats" 
-    />
-  </div>
+    <div class="box" v-if="islogin === true" >
+        <h3 id='mytitle' class="title" v-bind:title="appHoverMsg">[App]: {{ movieId }}</h3>
+        <div id="googlemail">
+            {{ displayName }}
+            <br>
+            <img :src="photoURL" height="100" width="100" alt="LoginImg" > 
+            <br>
+            <button @click="googlesignOut()"> signout </button>
+            <br>            
+        </div>    
+        <p> Select: {{ status.count }} seat(s), Total price: {{ status.price }} Baht</p>
+        <movie @chooseMovie="handleChooseMovie" 
+            :islogin="islogin"        
+            :movieId="movieId"
+            :fbMoviesArg="fbMoviesArg"
+        />
+        <seat 
+            @chooseSeat="handleChooseSeat"     
+            :islogin="islogin"
+            :movieId="movieId" 
+            :selectSeats="selectSeats" 
+            :firebaseSeats="firebaseSeats" 
+            :fbConfirmArg="fbConfirmArg"
+        />
+    </div>
+    <div class="box" v-else >
+        <h3 class="title" v-bind:title="appHoverMsg">[App]: {{ movieId }}</h3>
+        <div id="googlemail">
+            <button @click="googlesign()"> signin </button>
+        </div> 
+    </div>
 </template>
 
 <script>
@@ -37,6 +49,7 @@ provider.setCustomParameters({
   'login_hint': 'user@example.com'
 })
 
+var _this = this
 const db = firebase.database()
 
 export default {
@@ -44,6 +57,7 @@ export default {
     components: { Movie, Seat },
     data() {
         return {
+            islogin: false,
             displayName: '',
             photoURL: '',
             movieId: '',
@@ -51,11 +65,22 @@ export default {
             firebaseSeats: [],
             status: { count: 0, price: 0 },
             displayName: '',
-            photoURL: ''
+            photoURL: '',
+            firebaseArg: '',
+            fbConfirmArg: '',
+            fbMoviesArg: '',
+            appHoverMsg: 'You loaded this page on ' + new Date()
         }
     },
+    // mounted() will auto call when rendering page complete 
+    mounted () {
+        this.firebaseArg=firebase
+
+        console.log('xxx')  
+        console.log(this.firebaseArg)  
+    },
     methods: {
-        handleChooseMovie(movieId){     
+        handleChooseMovie(movieId){   
             if( this.status.count != 0 ){
                 if( confirm('Are you sure to select new movie? Old data will be lost!!)') == true){
                     //Reset all data
@@ -67,7 +92,7 @@ export default {
             }       
             this.movieId = movieId
             
-            const movieRef = db.ref('/').child(this.movieId)
+            const movieRef = db.ref('/').child('seattmp').child(this.movieId)
 
             // register firebase event 'on value change'
             movieRef.on('value', snapshot => {
@@ -83,7 +108,7 @@ export default {
         handleChooseSeat(seat){
             pushToArray(seat, this.selectSeats)
 
-            const dbRef = db.ref('/').child(this.movieId)
+            const dbRef = db.ref('/').child('seattmp').child(this.movieId)
             dbRef.push(seat)
 
             this.status = this.selectSeats.reduce( (sum, selectSeatsElement ) => {
@@ -96,7 +121,7 @@ export default {
             )
         },
         googlesign () {
-            console.log('yes')
+            console.log('googlesign')
             var vm = this
             firebase.auth().signInWithPopup(provider).then(function (result) {
                 // This gives you a Google Access Token. You can use it to access the Google API.
@@ -108,22 +133,56 @@ export default {
                 console.log('photoURL ::', user.photoURL)
                 vm.displayName = user.displayName
                 vm.photoURL = user.photoURL
+
+                // query database node /confirm
+                db.ref('/confirm').once("value")
+                .then(function(snapshot) {
+                    // if data is not empty then binding
+                    if(snapshot.val() != null){ 
+                         vm.fbConfirmArg = snapshot.val()
+                    }else{
+                        console.log('firebase with bad schema database')
+                    }
+                    console.log('++++++++++++++++')
+                    console.log(snapshot.val())
+                    console.log(vm.fbConfirmArg)
+                });
+
+                // query database node /confirm/movies
+                db.ref('/confirm/movies').once("value")
+                .then(function(snapshot) {
+                    // if data is not empty then binding
+                    if(snapshot.val() != null){ 
+                         vm.fbMoviesArg = snapshot.val()
+                    }else{
+                        console.log('firebase with bad schema database')
+                    }
+                    console.log('++++++++++++++++')
+                    console.log(snapshot.val())
+                    console.log(vm.fbMoviesArg)
+                });
+                vm.islogin = true
+
             }).catch(function (error) {
                 var errorCode = error.code;
                 var errorMessage = error.message;
                 var email = error.email;
                 var credential = error.credential;
+                vm.islogin = false
                 console.log(error)
             })
         },
         googlesignOut () {
             var vm = this
             firebase.auth().signOut().then(function () {
-                console.log('logOut')
+                console.log('googlesignOut')
                 vm.displayName = ''
                 vm.photoURL = ''
+                vm.islogin = false
+                vm.fbMoviesArg = ''
             }, function (error) {
                 console.log(error)
+                vm.islogin = false
             })
         }
     }
